@@ -12,16 +12,20 @@ if (!fs.existsSync(msgPath)) {
   );
   process.exit(1);
 }
-
-if (fs.lstatSync(msgPath).isDirectory()) {
-  const files = fs.readdirSync(msgPath);
-  const msgFiles = files
-    .filter(Boolean)
-    .filter((file) => file.endsWith(".msg"))
-    .map((file) => path.join(msgPath, file));
-  recurseDir(msgFiles);
-} else {
-  convertToPDF(msgPath);
+if (require.main === module) {
+  if (fs.lstatSync(msgPath).isDirectory()) {
+    const files = fs.readdirSync(msgPath);
+    const msgFiles = files
+      .filter(Boolean)
+      .filter((file) => file.endsWith(".msg"))
+      .map((file) => path.join(msgPath, file));
+    recurseDir(msgFiles);
+  } else {
+    convertToPDF(msgPath);
+  }
+}
+else {
+    module.exports = convertToPDF;
 }
 
 function recurseDir(files) {
@@ -33,9 +37,9 @@ function recurseDir(files) {
   }
 }
 
-function convertToPDF(msgFile) {
-  console.log(`Processing ${msgFile}`);
-  const buffer = fs.readFileSync(msgFile);
+function convertToPDF(msgFilePath) {
+  console.log(`Processing ${msgFilePath}`);
+  const buffer = fs.readFileSync(msgFilePath);
   const reader = new MsgReader(buffer);
   const msg = reader.getFileData();
 
@@ -57,10 +61,12 @@ function convertToPDF(msgFile) {
       if (err) {
         reject(err);
       } else {
-        stream.pipe(fs.createWriteStream(`${msgFile}.pdf`)).on("finish", () => {
-          console.log(`==> ${msgFile}.pdf`);
-          resolve();
-        });
+        stream
+          .pipe(fs.createWriteStream(`${msgFilePath}.pdf`))
+          .on("finish", () => {
+            console.log(`==> ${msgFilePath}.pdf`);
+            resolve();
+          });
       }
     });
   });
