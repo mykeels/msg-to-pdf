@@ -1,6 +1,6 @@
 {
   "name": "msg-to-pdf",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert MSG Outlook files to PDF.",
   "main": "index.js",
   "bin": "index.js",
