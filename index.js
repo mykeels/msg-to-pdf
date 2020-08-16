@@ -86,7 +86,7 @@ function getDate(str) {
 }
 
 function renderHTML({ from, to, date, subject, body }) {
-  const css = fs.readFileSync("./style.css", "utf8");
+  const css = fs.readFileSync(path.resolve("./style.css"), "utf8");
   return `
         <style>
             ${css}
