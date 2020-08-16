@@ -1,14 +1,15 @@
 {
   "name": "msg-to-pdf",
   "version": "1.0.0",
-  "description": "",
+  "description": "Convert MSG Outlook files to PDF.",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "mykeels",
+  "license": "MIT",
   "dependencies": {
     "@freiraum/msgreader": "^1.1.1",
     "html-pdf": "^2.2.0"
