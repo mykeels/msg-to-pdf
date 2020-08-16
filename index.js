@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { default: MsgReader } = require("@freiraum/msgreader/lib/MsgReader");
 const { urlRegex } = require("./utils");
+const pdf = require("html-pdf");
 
 const msgPath = process.argv[2];
 
@@ -26,8 +27,6 @@ if (fs.lstatSync(msgPath).isDirectory()) {
 function recurseDir(files) {
   const msgFile = files[0];
   if (msgFile) {
-    console.log(`Processing ${msgFile}`);
-
     convertToPDF(msgFile).finally(() => {
       recurseDir(files.slice(1));
     });
@@ -35,11 +34,10 @@ function recurseDir(files) {
 }
 
 function convertToPDF(msgFile) {
+  console.log(`Processing ${msgFile}`);
   const buffer = fs.readFileSync(msgFile);
   const reader = new MsgReader(buffer);
   const msg = reader.getFileData();
-
-  console.log(msg);
 
   const from = getFromAddress(msg.headers);
   const to = msg.recipients.map(({ name }) => name);
@@ -54,9 +52,18 @@ function convertToPDF(msgFile) {
 
   const html = renderHTML({ from, to, date, subject, body });
 
-  fs.writeFileSync("./index.html", html, { encoding: "utf8" });
-
-  return Promise.resolve(msg);
+  return new Promise((resolve, reject) => {
+    pdf.create(html).toStream(function (err, stream) {
+      if (err) {
+        reject(err);
+      } else {
+        stream.pipe(fs.createWriteStream(`${msgFile}.pdf`)).on("finish", () => {
+          console.log(`==> ${msgFile}.pdf`);
+          resolve();
+        });
+      }
+    });
+  });
 }
 
 function getFromAddress(str) {
