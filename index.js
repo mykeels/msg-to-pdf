@@ -3,7 +3,6 @@
 const fs = require("fs");
 const path = require("path");
 const { default: MsgReader } = require("@freiraum/msgreader/lib/MsgReader");
-const { urlRegex } = require("./utils");
 const pdf = require("html-pdf");
 
 const msgPath = process.argv[2];
@@ -86,7 +85,7 @@ function getDate(str) {
 }
 
 function renderHTML({ from, to, date, subject, body }) {
-  const css = fs.readFileSync(path.resolve("./style.css"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "./style.css"), "utf8");
   return `
         <style>
             ${css}
