@@ -1,0 +1,28 @@
+.font-bold {
+    font-weight: 900;
+}
+
+.text-xs {
+    font-size: 12px;
+}
+
+.text-sm {
+    font-size: 16px;
+}
+
+.text-md {
+    font-size: 20px;
+}
+
+.text-gray {
+    color: #777;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.body {
+    padding: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+}
